@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        #current-hour {
+            font-size: 48px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1 id="current-hour"></h1>
+    <script>
+        let now = new Date("2024-06-15T14:30:00");
+        let hours = now.getHours();
+        document.getElementById("current-hour").innerText = hours; 
+    </script>
+</body>
+</html>
