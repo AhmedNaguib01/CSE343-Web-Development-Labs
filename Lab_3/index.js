@@ -1,41 +1,81 @@
-let taskInput = document.getElementById("task");
-let taskList = document.getElementById("taskList");
+let screen = document.getElementById("display");
 
-let addButton = document.getElementById("addTask");
-let clearButton = document.getElementById("clearTasks");
+let currentValue = "";
+let previousValue = "";
+let currentOperator = null;
 
-addButton.addEventListener("click", addTask);
-clearButton.addEventListener("click", clearTasks);
-
-function addTask() {
-    let taskText = taskInput.value;
-    if (taskText === "") return;
-
-    let li = document.createElement("li");
-    li.textContent = taskText;
-
-    let delete_button = document.createElement("button");
-    delete_button.textContent = "X";
-    delete_button.classList.add("delete_btn");
-
-    delete_button.addEventListener("click", function (e) {
-        li.remove();
-    });
-
-    li.addEventListener("click", function () {
-        if (li.style.textDecoration === "line-through") {
-            li.style.textDecoration = "";
-        } else {
-            li.style.textDecoration = "line-through";
-        }
-    });
-
-    li.appendChild(delete_button);
-    taskList.appendChild(li);
-
-    taskInput.value = "";
+function pressNumber(number) {
+  if (currentValue === "0" && number === "0") {
+    return;
+  }
+  currentValue += number;
+  updateScreen();
 }
 
-function clearTasks() {
-    taskList.innerHTML = "";
+function pressOperator(operator) {
+  if (currentValue === "" && previousValue === "") {
+    return;
+  }
+  if (currentOperator !== null) {
+    performCalculation();
+  }
+  currentOperator = operator;
+  previousValue = currentValue;
+  currentValue = "";
+}
+
+function performCalculation() {
+  if (currentOperator === null || currentValue === "") {
+    return;
+  }
+
+  const first = parseFloat(previousValue);
+  const second = parseFloat(currentValue);
+  let result;
+
+  switch (currentOperator) {
+    case "+":
+      result = first + second;
+      break;
+    case "-":
+      result = first - second;
+      break;
+    case "*":
+      result = first * second;
+      break;
+    case "/":
+      result = second === 0 ? "Error" : first / second;
+      break;
+  }
+
+  screen.textContent = result;
+  currentValue = String(result);
+  currentOperator = null;
+  previousValue = "";
+}
+
+function pressDot() {
+  if (!currentValue.includes(".")) {
+    currentValue += ".";
+    updateScreen();
+  }
+}
+
+function makePercent() {
+  if (currentValue === "") {
+    return;
+  } 
+  currentValue = String(parseFloat(currentValue) / 100);
+  updateScreen();
+}
+
+function clearScreen() {
+  currentValue = "";
+  previousValue = "";
+  currentOperator = null;
+  updateScreen("0");
+}
+
+function updateScreen(value) {
+  screen.textContent = value || currentValue || "0";
 }
